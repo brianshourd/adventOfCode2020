@@ -1,0 +1,19 @@
+# Advent of Code 2020
+
+This is a program that solves the puzzles in Advent of Code. It is setup with Gradle, using `gradle init` for the basic scaffolding of the project, and is built with Kotlin.
+
+## Useful commands
+
+* Build: `./gradlew build`
+    * `./gradlew installDist` will create the necessary run file in
+      `app/build/install/app/bin`, which can be run normally
+* Test: `./gradlew test`
+    * `./gradlew test -i` will show more details about failures and stderr/stdout
+    * `./gradlew test --tests MyTestClass` will just run the tests in
+      `MyTestClass`
+* Format: `./gradlew ktlintFormat`
+    * `./gradlew ktlintCheck` will not auto-format, and will just check and
+      output any problems
+* Run: `./gradlew run`
+    * Note, this is very limited, as it cannot accept stdin by default, nor read
+      command line args. Instead, build with `startScripts`, and then run from bin

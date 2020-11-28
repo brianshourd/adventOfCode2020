@@ -1,0 +1,8 @@
+.gradle
+build
+
+# Inputs
+/input*.txt
+
+# Symlink
+/run
