@@ -32,7 +32,7 @@ class Main : CliktCommand(
 }
 
 abstract class DayCommand(
-    val problem: ITwoPartProblem
+    val problem: IAdcoProblem
 ) : CliktCommand(help = problem.title) {
     val showProblem: Boolean by option(
         "--show",

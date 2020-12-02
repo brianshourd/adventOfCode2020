@@ -6,19 +6,19 @@ data class AdcoError(
     val msg: String,
     val underlying: Exception? = null
 ) : Exception(msg) {
-    override fun toString(): String {
-        var str = "AdcoError: $msg"
+    override fun toString(): String =
         if (underlying != null) {
-            str += "; caused by $underlying"
+            msg + "; caused by: $underlying"
+        } else {
+            msg
         }
-        return str
-    }
 }
 
-interface ITwoPartProblem {
+interface IAdcoProblem {
     val title: String
     val partAProblemText: String
     val partBProblemText: String
+
     fun partA(input: String): Either<AdcoError, String>
     fun partB(input: String): Either<AdcoError, String>
 }
