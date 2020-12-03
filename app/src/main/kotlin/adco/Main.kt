@@ -58,4 +58,5 @@ class DayCommand<TInput, TOutput>(
 fun main(args: Array<String>) = Main().subcommands(
     DayCommand(Day1(), "day1"),
     DayCommand(Day2(), "day2"),
+    DayCommand(Day3(), "day3"),
 ).main(args)

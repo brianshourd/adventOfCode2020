@@ -1,7 +1,7 @@
 package adco
 
 import lib.either.Either
-import lib.either.right
+import lib.either.asRight
 import lib.parsers.Parser
 import lib.parsers.anyCharP
 import lib.parsers.charP
@@ -57,8 +57,8 @@ class Day2() : IAdcoProblem<List<Day2.PasswordLine>, Int> {
     }
 
     override fun partA(input: List<PasswordLine>): Either<AdcoError, Int> =
-        right(input.count(::passwordIsValidA))
+        input.count(::passwordIsValidA).asRight()
 
     override fun partB(input: List<PasswordLine>): Either<AdcoError, Int> =
-        right(input.count(::passwordIsValidB))
+        input.count(::passwordIsValidB).asRight()
 }

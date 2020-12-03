@@ -273,7 +273,7 @@ class ParserTests {
 
     @Test
     fun testManyTillP() {
-        val takeTillSemi = anyCharP() manyTillP charP(';')
+        val takeTillSemi = anyCharP() manyTill charP(';')
         val parser = takeTillSemi thenIgnore charP(';')
         assertParsingSucceeds(parser, "defg;", listOf('d', 'e', 'f', 'g'))
         assertParsingSucceeds(parser, "12;", listOf('1', '2'))

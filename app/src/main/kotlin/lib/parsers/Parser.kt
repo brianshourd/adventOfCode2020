@@ -93,7 +93,7 @@ fun <T> between(openP: Parser<*>, closeP: Parser<*>, p: Parser<T>): Parser<T> =
 fun <T> Parser<T>.optional(): Parser<Option<T>> = Parser.OptionalP(this)
 
 // Match 0 or more instances of this parser, until end is a match
-infix fun <T> Parser<T>.manyTillP(end: Parser<*>): Parser<List<T>> = Parser.ManyTillP(this, end)
+infix fun <T> Parser<T>.manyTill(end: Parser<*>): Parser<List<T>> = Parser.ManyTillP(this, end)
 
 // Match 0 or more instances of this parser, separated by the sep parser
 fun <T, S> sepByP(p: Parser<T>, sep: Parser<S>, allowTrailing: Boolean = true): Parser<List<T>> =
@@ -393,7 +393,7 @@ sealed class Parser<out T>() {
     }
 
     internal data class ManyTillP<T>(val p: Parser<T>, val end: Parser<*>) : Parser<List<T>>() {
-        override fun getName(): String = "manyTillP(${p.getName()}, ${end.getName()})"
+        override fun getName(): String = "(${p.getName()} manyTill ${end.getName()})"
         override fun parsePartial(input: String, pos: Int): ParseResult<List<T>> {
             var currentPos = pos
             var output = mutableListOf<T>()

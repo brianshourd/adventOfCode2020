@@ -33,7 +33,9 @@ sealed class Either<out L, out R>(private val lNullable: L?, private val rNullab
 }
 
 fun <L> left(v: L): Either<L, Nothing> = Either.Left(v)
+fun <L> L.asLeft(): Either<L, Nothing> = Either.Left(this)
 fun <R> right(v: R): Either<Nothing, R> = Either.Right(v)
+fun <R> R.asRight(): Either<Nothing, R> = Either.Right(this)
 
 fun <L, R, T> Either<L, R>.flatMap(f: (R) -> Either<L, T>): Either<L, T> = when (this) {
     is Either.Left<L> -> this
