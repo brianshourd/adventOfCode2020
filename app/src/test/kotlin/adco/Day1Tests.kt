@@ -1,5 +1,6 @@
 package adco
 
+import helpers.assertRight
 import lib.either.right
 import lib.option.some
 import kotlin.test.Test
@@ -20,9 +21,10 @@ class Day1Tests {
 
     @Test
     fun testPartA() {
-        val input = listOf(1721, 979, 366, 299, 675, 1456).joinToString("\n")
+        val inputRaw = listOf(1721, 979, 366, 299, 675, 1456).joinToString("\n")
+        val input = assertRight(day1.parser.parse(inputRaw))
         val output = day1.partA(input)
-        val expected = right("514579")
+        val expected = right(514579)
         assertEquals(expected, output)
     }
 
@@ -38,9 +40,10 @@ class Day1Tests {
 
     @Test
     fun testPartB() {
-        val input = listOf(1721, 979, 366, 299, 675, 1456).joinToString("\n")
+        val inputRaw = listOf(1721, 979, 366, 299, 675, 1456).joinToString("\n")
+        val input = assertRight(day1.parser.parse(inputRaw))
         val output = day1.partB(input)
-        val expected = right("241861950")
+        val expected = right(241861950)
         assertEquals(expected, output)
     }
 }

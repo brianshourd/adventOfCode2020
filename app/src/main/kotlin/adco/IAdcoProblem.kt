@@ -1,6 +1,7 @@
 package adco
 
 import lib.either.Either
+import lib.parsers.Parser
 
 data class AdcoError(
     val msg: String,
@@ -14,11 +15,9 @@ data class AdcoError(
         }
 }
 
-interface IAdcoProblem {
+interface IAdcoProblem<TInput, TOutput> {
     val title: String
-    val partAProblemText: String
-    val partBProblemText: String
-
-    fun partA(input: String): Either<AdcoError, String>
-    fun partB(input: String): Either<AdcoError, String>
+    val parser: Parser<TInput>
+    fun partA(input: TInput): Either<AdcoError, TOutput>
+    fun partB(input: TInput): Either<AdcoError, TOutput>
 }

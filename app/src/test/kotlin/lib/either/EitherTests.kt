@@ -91,6 +91,12 @@ class EitherTests {
     }
 
     @Test
+    fun testTraverseEmpty() {
+        val input = emptyList<Int>()
+        assertEquals(Either.Right(emptyList<Int>()), input.traverse(::addOneIfNotTooBig))
+    }
+
+    @Test
     fun testOptionSomeToEither() {
         assertEquals(Either.Right(1), some(1).toEither { "foo" })
     }

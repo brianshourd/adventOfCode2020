@@ -3,10 +3,9 @@ package adco
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.subcommands
 import com.github.ajalt.clikt.parameters.arguments.argument
-import com.github.ajalt.clikt.parameters.options.default
-import com.github.ajalt.clikt.parameters.options.flag
-import com.github.ajalt.clikt.parameters.options.option
-import com.github.ajalt.clikt.parameters.types.choice
+import com.github.ajalt.clikt.parameters.types.enum
+import lib.either.Either
+import lib.either.flatMap
 
 fun readAllInput(): String {
     val lines = mutableListOf<String>()
@@ -31,55 +30,32 @@ class Main : CliktCommand(
     override fun run() { }
 }
 
-abstract class DayCommand(
-    val problem: IAdcoProblem
-) : CliktCommand(help = problem.title) {
-    val showProblem: Boolean by option(
-        "--show",
-        "-s",
-        help = "Just printout the statement of the problem. False by default"
-    ).flag("--no-show", default = false)
-
-    val part: String by argument().choice("a", "b")
+class DayCommand<TInput, TOutput>(
+    val problem: IAdcoProblem<TInput, TOutput>,
+    val name: String,
+) : CliktCommand(help = problem.title, name = name) {
+    val part: Part by argument().enum()
 
     override fun run() {
-        val partEnum = when (part) {
-            "a" -> Part.A
-            "b" -> Part.B
-            else -> {
-                System.err.println("Unknown part: $part")
-                System.exit(1)
-                Part.A
-            }
-        }
-        val config = Config(showProblem, partEnum)
-
-        if (config.showProblem) {
-            when (partEnum) {
-                Part.A -> println(problem.partAProblemText)
-                Part.B -> println(problem.partBProblemText)
-            }
-        } else {
-            runImpl(config.part)
-        }
-    }
-
-    // Default implementation, will likely work for most/all of the problems
-    fun runImpl(part: Part) {
-        val input = readAllInput()
-        val result = when (part) {
-            Part.A -> problem.partA(input)
-            Part.B -> problem.partB(input)
-        }
-        result.fold(
+        val inputRaw = readAllInput()
+        runCore(inputRaw).fold(
             { err -> println("ERROR: $err") },
             { output -> println(output) }
         )
     }
+
+    fun runCore(inputRaw: String): Either<AdcoError, String> =
+        problem.parser.parse(inputRaw).mapLeft {
+            AdcoError("Error parsing input", it)
+        }.flatMap { input: TInput ->
+            when (part) {
+                Part.A -> problem.partA(input)
+                Part.B -> problem.partB(input)
+            }.map { it.toString() }
+        }
 }
 
-class Day1Command() : DayCommand(Day1())
-
 fun main(args: Array<String>) = Main().subcommands(
-    Day1Command()
+    DayCommand(Day1(), "day1"),
+    DayCommand(Day2(), "day2"),
 ).main(args)

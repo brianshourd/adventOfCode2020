@@ -9,7 +9,7 @@ import lib.option.some
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
-class ParsersTests {
+class ParserTests {
     fun <T> assertParsingSucceeds(
         parser: Parser<T>,
         input: String,
@@ -204,6 +204,7 @@ class ParsersTests {
     fun testIntP() {
         val parser = intP() sepBy charP(',')
         assertParsingSucceeds(parser, "1,12,56", listOf(1, 12, 56))
+        assertParsingSucceeds(parser, "1,-12,0", listOf(1, -12, 0))
         assertParsingFails(
             parser,
             "12x",
@@ -216,6 +217,14 @@ class ParsersTests {
             0,
             "No digits found"
         )
+    }
+
+    @Test
+    fun testRestOfLineP() {
+        val parser = restOfLineP() thenIgnore manyP(anyCharP())
+        assertParsingSucceeds(parser, "abcdef", "abcdef")
+        assertParsingSucceeds(parser, "abcdef\n", "abcdef")
+        assertParsingSucceeds(parser, "abcdef\r\n", "abcdef")
     }
 
     @Test
@@ -264,19 +273,20 @@ class ParsersTests {
 
     @Test
     fun testManyTillP() {
-        val parser = anyCharP() manyTillP charP(';')
+        val takeTillSemi = anyCharP() manyTillP charP(';')
+        val parser = takeTillSemi thenIgnore charP(';')
         assertParsingSucceeds(parser, "defg;", listOf('d', 'e', 'f', 'g'))
         assertParsingSucceeds(parser, "12;", listOf('1', '2'))
         assertParsingSucceeds(parser, ";", emptyList<Char>())
         assertParsingFails(
             parser,
             "",
-            ParserException("", 0, parser, "Did not find end before reaching end of input")
+            ParserException("", 0, takeTillSemi, "Did not find end before reaching end of input")
         )
         assertParsingFails(
             parser,
             "ab",
-            ParserException("ab", 2, parser, "Did not find end before reaching end of input")
+            ParserException("ab", 2, takeTillSemi, "Did not find end before reaching end of input")
         )
         assertParsingFails(
             parser,
@@ -476,5 +486,22 @@ class ParsersTests {
         assertEquals("Error parsing \"2\" at location 0 using charP(1): Non-matching character '2' not '1'", exception.message)
         val namedException = assertLeft(namedParser.parse("2"))
         assertEquals("Error parsing \"2\" at location 0 using parse1: Non-matching character '2' not '1'", namedException.message)
+    }
+
+    @Test
+    fun testSeriesP() {
+        val parser = seriesP(
+            intP(),
+            charP(':'),
+            intP()
+        ).map { (n: Int, _: Char, d: Int) -> IntRange(n, d) }
+
+        assertParsingSucceeds(parser, "15:18", 15..18)
+        assertParsingSucceeds(parser, "-5:100", -5..100)
+        assertParsingFails(
+            parser,
+            "55",
+            ParserException("55", 2, charP(':'), "End of input reached")
+        )
     }
 }

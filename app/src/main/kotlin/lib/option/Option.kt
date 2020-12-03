@@ -12,6 +12,8 @@ sealed class Option<out T>(private val vNullable: T?) {
 
     fun orNull(): T? = vNullable
 
+    fun isEmpty(): Boolean = vNullable == null
+
     data class Some<out T>(val v: T) : Option<T>(v)
     object None : Option<Nothing>(null)
 }

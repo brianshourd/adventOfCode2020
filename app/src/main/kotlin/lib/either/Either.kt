@@ -50,7 +50,7 @@ fun <L, R> Iterable<Either<L, R>>.sequence(): Either<L, List<R>> {
             { leftOpt = some(it) },
             { rights.add(it) }
         )
-        if (leftOpt is Option.Some<L>) {
+        if (leftOpt.isEmpty()) {
             break
         }
     }
