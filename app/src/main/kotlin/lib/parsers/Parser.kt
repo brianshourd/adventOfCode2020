@@ -209,6 +209,8 @@ data class PartialParse<out T>(val v: T, val loc: Int)
 typealias ParseResult<T> = Either<ParserException, PartialParse<T>>
 
 sealed class Parser<out T>() {
+    operator fun invoke(input: String): Either<ParserException, T> = parse(input)
+
     fun parse(input: String): Either<ParserException, T> =
         parsePartial(input, 0).flatMap { res ->
             if (res.loc != input.length) {

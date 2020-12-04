@@ -52,7 +52,7 @@ fun <L, R> Iterable<Either<L, R>>.sequence(): Either<L, List<R>> {
             { leftOpt = some(it) },
             { rights.add(it) }
         )
-        if (leftOpt.isEmpty()) {
+        if (!leftOpt.isEmpty()) {
             break
         }
     }
@@ -75,6 +75,8 @@ fun <L, R, T> Iterable<T>.traverse(f: (T) -> Either<L, R>): Either<L, List<R>> {
 }
 
 fun <L, R> Option<R>.toEither(ifLeft: () -> L): Either<L, R> = this.fold({ right(it) }, { left(ifLeft()) })
+fun <L, R> R?.toEither(ifLeft: () -> L): Either<L, R> =
+    if (this != null) right(this) else left(ifLeft())
 
 fun <R> tryEither(action: () -> R): Either<Exception, R> =
     try {
