@@ -272,6 +272,18 @@ class ParserTests {
     }
 
     @Test
+    fun testRepeated() {
+        val parser = (anyCharP() repeated 5) thenIgnore restOfLineP()
+        assertParsingSucceeds(parser, "defgh", listOf('d', 'e', 'f', 'g', 'h'))
+        assertParsingSucceeds(parser, "123456", listOf('1', '2', '3', '4', '5'))
+        assertParsingFails(
+            parser,
+            "1234",
+            ParserException("1234", 4, anyCharP(), "End of input reached")
+        )
+    }
+
+    @Test
     fun testManyTillP() {
         val takeTillSemi = anyCharP() manyTill charP(';')
         val parser = takeTillSemi thenIgnore charP(';')

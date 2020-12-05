@@ -4,6 +4,8 @@ import lib.either.Either
 import lib.either.flatMap
 import lib.either.left
 import lib.either.right
+import lib.either.asLeft
+import lib.either.asRight
 import lib.either.traverse
 import lib.either.tryEither
 import lib.hlist.HList10
@@ -84,6 +86,9 @@ fun <T> manyP(p: Parser<T>): Parser<List<T>> = Parser.ManyP(p)
 
 // Match 1 or more instances of the given parser
 fun <T> many1P(p: Parser<T>): Parser<List<T>> = Parser.Many1P(p)
+
+// Match n instances of the given parser
+infix fun <T> Parser<T>.repeated(n: Int): Parser<List<T>> = Parser.RepeatedP(this, n)
 
 // Match open, then p, then closeP
 fun <T> between(openP: Parser<*>, closeP: Parser<*>, p: Parser<T>): Parser<T> =
@@ -425,6 +430,33 @@ sealed class Parser<out T>() {
                 }
             }
             return left(ParserException(input, currentPos, this, "Did not find end before reaching end of input"))
+        }
+    }
+
+    internal data class RepeatedP<T>(val p: Parser<T>, val n: Int) : Parser<List<T>>() {
+        override fun getName(): String = "(${p.getName()} repeated ${n})"
+        override fun parsePartial(input: String, pos: Int): ParseResult<List<T>> {
+            var currentPos = pos
+            var output = mutableListOf<T>()
+            var error: ParserException? = null
+            while (output.size < n && error == null) {
+                val result = p.parsePartial(input, currentPos)
+                when (result) {
+                    is Either.Right<PartialParse<T>> -> {
+                        output.add(result.v.v)
+                        currentPos = result.v.loc
+                    }
+                    is Either.Left<ParserException> -> {
+                        error = result.v
+                        break
+                    }
+                }
+            }
+            if (error != null) {
+                return error.asLeft()
+            } else {
+                return PartialParse(output.toList(), currentPos).asRight()
+            }
         }
     }
 
