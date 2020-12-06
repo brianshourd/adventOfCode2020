@@ -1,33 +1,15 @@
 package adco
 
-import lib.hlist.HList7
-import lib.hlist.HList3
-import lib.hlist.hlist
 import lib.either.Either
 import lib.either.asLeft
-import lib.either.asRight
-import lib.either.flatMap
 import lib.either.toEither
-import lib.either.traverse
 import lib.parsers.Parser
-import lib.parsers.charP
-import lib.parsers.choiceP
-import lib.parsers.digitP
-import lib.parsers.ignoreThen
-import lib.parsers.intP
 import lib.parsers.many1P
 import lib.parsers.map
 import lib.parsers.newlineP
-import lib.parsers.noneOfP
 import lib.parsers.oneOfP
-import lib.parsers.or
 import lib.parsers.sepBy
-import lib.parsers.spaceP
-import lib.parsers.stringP
 import lib.parsers.then
-import lib.parsers.thenIgnore
-import lib.parsers.restOfLineP
-import lib.parsers.repeated
 import kotlin.math.pow
 
 class Day5() : IAdcoProblem<List<Day5.BoardingPass>, Int> {

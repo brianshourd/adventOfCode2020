@@ -1,11 +1,11 @@
 package lib.parsers
 
 import lib.either.Either
+import lib.either.asLeft
+import lib.either.asRight
 import lib.either.flatMap
 import lib.either.left
 import lib.either.right
-import lib.either.asLeft
-import lib.either.asRight
 import lib.either.traverse
 import lib.either.tryEither
 import lib.hlist.HList10
@@ -434,7 +434,7 @@ sealed class Parser<out T>() {
     }
 
     internal data class RepeatedP<T>(val p: Parser<T>, val n: Int) : Parser<List<T>>() {
-        override fun getName(): String = "(${p.getName()} repeated ${n})"
+        override fun getName(): String = "(${p.getName()} repeated $n)"
         override fun parsePartial(input: String, pos: Int): ParseResult<List<T>> {
             var currentPos = pos
             var output = mutableListOf<T>()

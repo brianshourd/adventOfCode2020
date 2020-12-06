@@ -1,10 +1,8 @@
 package adco
 
 import adco.Day5.BoardingPass
-import adco.Day5.Bsp
 import adco.Day5.Bsp.B
 import adco.Day5.Bsp.F
-import helpers.assertLeft
 import helpers.assertRight
 import kotlin.test.Test
 import kotlin.test.assertEquals
