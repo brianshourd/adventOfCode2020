@@ -105,6 +105,11 @@ fun <T, S> sepByP(p: Parser<T>, sep: Parser<S>, allowTrailing: Boolean = true): 
     Parser.SepByP(p, sep, allowTrailing)
 infix fun <T, S> Parser<T>.sepBy(s: Parser<S>): Parser<List<T>> = Parser.SepByP(this, s)
 
+// Match 1 or more instances of this parser, separated by the sep parser
+fun <T, S> sepBy1P(p: Parser<T>, sep: Parser<S>, allowTrailing: Boolean = true): Parser<List<T>> =
+    Parser.SepBy1P(p, sep, allowTrailing)
+infix fun <T, S> Parser<T>.sepBy1(s: Parser<S>): Parser<List<T>> = Parser.SepBy1P(this, s)
+
 // Do the first parser, then the second parser, returning a Pair
 operator fun <T, S> Parser<T>.plus(s: Parser<S>): Parser<Pair<T, S>> = Parser.PlusP(this, s)
 infix fun <T, S> Parser<T>.then(s: Parser<S>): Parser<Pair<T, S>> = Parser.PlusP(this, s)
@@ -498,6 +503,22 @@ sealed class Parser<out T>() {
                     )
                 }
             )
+    }
+
+    internal data class SepBy1P<T, S>(
+        val p: Parser<T>,
+        val sep: Parser<S>,
+        val allowTrailing: Boolean = true
+    ) : Parser<List<T>>() {
+        override fun getName(): String = "(${p.getName()} sepBy1 ${sep.getName()})"
+        override fun parsePartial(input: String, pos: Int): ParseResult<List<T>> =
+            sepByP(p, sep, allowTrailing).parsePartial(input, pos).flatMap { (ts, loc) ->
+                if (ts.size == 0) {
+                    left(ParserException(input, pos, this, "Expected to match at least one"))
+                } else {
+                    right(PartialParse(ts, loc))
+                }
+            }.mapLeft { it.copy(parser = this) }
     }
 
     internal data class PlusP<T, S>(val p1: Parser<T>, val p2: Parser<S>) : Parser<Pair<T, S>>() {
