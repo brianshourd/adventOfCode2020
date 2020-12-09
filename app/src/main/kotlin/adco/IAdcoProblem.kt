@@ -3,10 +3,15 @@ package adco
 import lib.either.Either
 import lib.parsers.Parser
 
-data class AdcoError(
+open class AdcoError(
     val msg: String,
     val underlying: Exception? = null
 ) : Exception(msg) {
+    override fun equals(other: Any?): Boolean =
+        (other is AdcoError) &&
+            other.msg == this.msg &&
+            other.underlying == this.underlying
+
     override fun toString(): String =
         if (underlying != null) {
             msg + "; caused by: $underlying"
