@@ -64,4 +64,5 @@ fun main(args: Array<String>) = Main().subcommands(
     DayCommand(Day6(), "day6"),
     DayCommand(Day7(), "day7"),
     DayCommand(Day8(), "day8"),
+    DayCommand(Day9(), "day9"),
 ).main(args)

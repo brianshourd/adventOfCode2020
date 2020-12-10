@@ -3,10 +3,10 @@ package adco
 import lib.either.Either
 import lib.either.asLeft
 import lib.either.asRight
+import lib.either.toEither
 import lib.option.Option
 import lib.option.getOrElse
 import lib.option.none
-import lib.either.toEither
 import lib.option.toOption
 import lib.parsers.Parser
 import lib.parsers.charP

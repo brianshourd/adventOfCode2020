@@ -72,6 +72,9 @@ fun stringP(s: String): Parser<String> = Parser.StringP(s)
 // Match and consume as many digits as present, and parse into an integer
 fun intP(): Parser<Int> = Parser.IntP
 
+// Match and consume as many digits as present, and parse into an integer
+fun longP(): Parser<Long> = Parser.LongP
+
 // Match and consume the rest of the line (either newline, or eof). Does not consume newlines
 fun restOfLineP(): Parser<String> = Parser.RestOfLineP
 
@@ -326,6 +329,16 @@ sealed class Parser<out T>() {
     internal object IntP : Parser<Int>() {
         override fun getName(): String = "intP"
         override fun parsePartial(input: String, pos: Int): ParseResult<Int> =
+            LongP.parsePartial(input, pos).map { (i, l) ->
+                PartialParse(i.toInt(), l)
+            }.mapLeft {
+                it.copy(parser = this)
+            }
+    }
+
+    internal object LongP : Parser<Long>() {
+        override fun getName(): String = "longP"
+        override fun parsePartial(input: String, pos: Int): ParseResult<Long> =
             (charP('-').optional() then manyP(digitP()))
                 .parsePartial(input, pos)
                 .flatMap { (found, loc) ->
@@ -334,7 +347,7 @@ sealed class Parser<out T>() {
                         left(ParserException(input, pos, this, "No digits found"))
                     } else {
                         tryEither {
-                            digits.joinToString("").toInt()
+                            digits.joinToString("").toLong()
                         }.mapLeft {
                             // Should not happen
                             ParserException(input, pos, this, "Unable to parse int from collected digits $digits", it)
