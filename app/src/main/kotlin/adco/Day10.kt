@@ -18,14 +18,14 @@ class Day10() : IAdcoProblem<List<Int>, Long> {
         (xs + 0).sorted().let { it + ((it.lastOrNull() ?: 0) + 3) }
             .zipWithNext { a, b -> b - a }
 
-    fun countArrangements(jumps: List<Int>): Int =
+    fun countArrangements(jumps: List<Int>, recurse: (List<Int>) -> Int): Int =
         if (jumps.size == 0 || jumps[0] > 3) {
             0
         } else if (jumps.size < 2) {
             1
         } else {
-            countArrangements(jumps.drop(1)) +
-                countArrangements(listOf(jumps[0] + jumps[1]) + jumps.drop(2))
+            recurse(jumps.drop(1)) +
+                recurse(listOf(jumps[0] + jumps[1]) + jumps.drop(2))
         }
 
     tailrec fun processJumps(jumps: List<Int>, f: (List<Int>) -> Int, acc: Long = 1L): Long =
