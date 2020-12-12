@@ -134,7 +134,7 @@ fun <T> Parser<T>.named(name: String): Parser<T> = Parser.NamedP(this, name)
 fun <T, S> Parser<T>.map(f: (T) -> S): Parser<S> = Parser.MapP(this, f)
 fun <T, S> Parser<T>.flatMap(f: (T) -> Parser<S>): Parser<S> = Parser.FlatMapP(this, f)
 fun <T> lift(v: T): Parser<T> = Parser.LiftP(v)
-fun failureP(msg: String): Parser<Nothing> = Parser.Failure(msg)
+fun <T> failureP(msg: String): Parser<T> = Parser.Failure(msg)
 
 /**
  * Avoid nested flatmaps when running a series of parsers

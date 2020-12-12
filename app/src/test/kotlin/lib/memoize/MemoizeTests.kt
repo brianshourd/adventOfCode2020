@@ -1,9 +1,8 @@
 package lib.memoize
 
-import helpers.assertRight
+import java.math.BigInteger
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import java.math.BigInteger
 
 class MemoizeTests {
     fun fib(x: Int, recurse: (Int) -> BigInteger): BigInteger =
