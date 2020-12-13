@@ -78,6 +78,19 @@ fun <L, R> Option<R>.toEither(ifLeft: () -> L): Either<L, R> = this.fold({ right
 fun <L, R> R?.toEither(ifLeft: () -> L): Either<L, R> =
     if (this != null) right(this) else left(ifLeft())
 
+fun <L, R> Iterable<Either<L, R>>.takeLefts(): List<L> = this.mapNotNull { e ->
+    when (e) {
+        is Either.Right<R> -> null
+        is Either.Left<L> -> e.v
+    }
+}
+fun <L, R> Iterable<Either<L, R>>.takeRights(): List<R> = this.mapNotNull { e ->
+    when (e) {
+        is Either.Right<R> -> e.v
+        is Either.Left<L> -> null
+    }
+}
+
 fun <R> tryEither(action: () -> R): Either<Exception, R> =
     try {
         right(action())

@@ -22,6 +22,7 @@ fun <T> none(): Option<T> = Option.None
 fun <T> some(v: T): Option<T> = Option.Some(v)
 
 fun <T> T?.toOption(): Option<T> = if (this != null) some(this) else none()
+fun <T> Iterable<Option<T>>.somes(): List<T> = this.mapNotNull { it.orNull() }
 
 fun <T, S : Option<T>> Option<S>.flatten(): Option<T> = when (this) {
     is Option.Some<S> -> this.v
