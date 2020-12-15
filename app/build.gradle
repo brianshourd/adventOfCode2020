@@ -29,6 +29,9 @@ dependencies {
     // Use the Kotlin JDK 8 standard library.
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
 
+    // Use the Kotlinx immutable collections library
+    implementation 'org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.3'
+
     // Command line interface tooling
     implementation 'com.github.ajalt.clikt:clikt:3.0.1'
 
