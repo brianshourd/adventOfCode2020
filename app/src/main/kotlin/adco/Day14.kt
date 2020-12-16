@@ -5,9 +5,7 @@ import kotlinx.collections.immutable.ImmutableMap
 import kotlinx.collections.immutable.ImmutableSet
 import kotlinx.collections.immutable.PersistentMap
 import kotlinx.collections.immutable.immutableSetOf
-import kotlinx.collections.immutable.minus
 import kotlinx.collections.immutable.persistentMapOf
-import kotlinx.collections.immutable.plus
 import kotlinx.collections.immutable.toImmutableList
 import kotlinx.collections.immutable.toImmutableSet
 import lib.either.Either
@@ -23,7 +21,6 @@ import lib.parsers.many1P
 import lib.parsers.map
 import lib.parsers.newlineP
 import lib.parsers.oneOfP
-import lib.parsers.plus
 import lib.parsers.sepBy
 import lib.parsers.seriesP
 import lib.parsers.stringP
